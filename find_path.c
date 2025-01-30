@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 14:18:05 by lguiet            #+#    #+#             */
-/*   Updated: 2025/01/29 16:29:24 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/01/30 15:10:24 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,12 +55,13 @@ char	*add_cmd(char const *s1, char const *s2)
 }
 char	*find_path(char *env, char *cmd)
 {
-	char **path;
-	char *path_found;
-	int i = 0;
-	path = ft_split(env, ':');
+	char	**path;
+	char	*path_found;
+	int		i;
 
-	while (path[i])
+	i = 0;
+	path = ft_split(env, ':');
+	while (path && path[i])
 	{
 		path_found = add_cmd(path[i], cmd);
 		if ((access(path_found, F_OK) == 0) && (access(path_found, X_OK) == 0))
@@ -70,8 +71,11 @@ char	*find_path(char *env, char *cmd)
 			return (path_found);
 		}
 		i++;
-		free(path_found);
+		if (path[i])
+			free(path_found);
 	}
-
+	if (path && *path)
+		free_path(path);
+	free(path_found);
 	return (NULL);
 }

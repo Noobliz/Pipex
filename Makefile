@@ -8,7 +8,7 @@ LIBFT = LIBFT/libft.a
 SRCS = \
 	find_path.c \
 	parse_argv.c \
-	main.c \
+	main_test.c \
 
 
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)
