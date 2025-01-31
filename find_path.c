@@ -14,68 +14,60 @@
 
 char	*get_env(char **envp)
 {
-	char	*env;
-	int		i;
-	int		j;
+	int i = 0;
 
-	j = 0;
-	i = 0;
 	while (envp[i])
 	{
-		env = ft_strnstr(envp[i], "PATH=", 5);
-		if (env)
-		{
-			while (j < 5)
-			{
-				env++;
-				j++;
-			}
-			return (env);
-		}
+		if (ft_strncmp(envp[i], "PATH=", 5) == 0)
+			return (envp[i] + 5); // Retourner juste après "PATH="
 		i++;
 	}
 	return (NULL);
 }
+
 char	*add_cmd(char const *s1, char const *s2)
 {
-	size_t	s1_len;
-	size_t	s2_len;
-	char	*arr;
+	if (!s1 || !s2)
+		return (NULL);
 
-	s1_len = ft_strlen(s1);
-	s2_len = ft_strlen(s2);
-	arr = malloc(s1_len + s2_len + 2);
+	size_t s1_len = ft_strlen(s1);
+	size_t s2_len = ft_strlen(s2);
+	char *arr = malloc(s1_len + s2_len + 2);
 	if (!arr)
 		return (NULL);
+	
 	ft_strlcpy(arr, s1, s1_len + 1);
 	arr[s1_len] = '/';
-	arr[s1_len + 1] = '\0';
-	ft_strlcat(arr, s2, s2_len + s1_len + 2);
+	ft_strlcpy(arr + s1_len + 1, s2, s2_len + 1);
+	
 	return (arr);
 }
+
 char	*find_path(char *env, char *cmd)
 {
-	char	**path;
-	char	*path_found;
-	int		i;
+	if (!env || !cmd)
+		return (NULL);
 
-	i = 0;
-	path = ft_split(env, ':');
-	while (path && path[i])
+	char **path = ft_split(env, ':');
+	if (!path)
+		return (NULL);
+
+	char *path_found = NULL;
+	for (int i = 0; path[i]; i++)
 	{
-		path_found = add_cmd(path[i], cmd);
-		if ((access(path_found, F_OK) == 0) && (access(path_found, X_OK) == 0))
+		char *full_path = add_cmd(path[i], cmd);
+		if (!full_path)
+			continue;
+
+		if (access(full_path, F_OK) == 0 && access(full_path, X_OK) == 0)
 		{
 			free_path(path);
-			printf("for '%s', the path is :%s\n", cmd, path_found);
-			return (path_found);
+			return (full_path);
 		}
-		i++;
-		if (path[i])
-			free(path_found);
+		free(full_path);
 	}
-	if (path && *path)
-		free_path(path);
-	free(path_found);
+
+	free_path(path);
 	return (NULL);
 }
+
