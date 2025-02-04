@@ -6,12 +6,24 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:27:44 by lguiet            #+#    #+#             */
-/*   Updated: 2025/01/30 14:45:23 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/04 15:59:12 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
+void	free_path(char **path)
+{
+	int	i;
+
+	i = 0;
+	while (path[i])
+	{
+		free(path[i]);
+		i++;
+	}
+	free(path);
+}
 int	check_files(int argc, char **argv)
 {
 	int	input_fd;
@@ -39,28 +51,29 @@ int	check_files(int argc, char **argv)
 	close(output_fd);
 	return (EXIT_SUCCESS);
 }
-
-char	**get_cmd(char *argv)
+void	init_data(t_data *data, char **argv, int argc)
 {
-	char	**cmd;
-
-	cmd = ft_split(argv, ' ');
-	if (cmd == NULL)
-	{
-		return (NULL);
-	}
-	return (cmd);
+	data->file1 = ft_strdup(argv[1]);
+	data->file2 = ft_strdup(argv[argc - 1]);
+}
+void	init_cmd(t_cmd *cmd, t_data *data)
+{
+	cmd->args = NULL;
+	cmd->path = NULL;
+	cmd->num_cmds = 0;
+	cmd->data = data;
+	cmd->next = NULL;
 }
 
-void	free_path(char **path)
-{
-	int	i;
+// void	free_path(char **path)
+// {
+// 	int	i;
 
-	i = 0;
-	while (path[i])
-	{
-		free(path[i]);
-		i++;
-	}
-	free(path);
-}
+// 	i = 0;
+// 	while (path[i])
+// 	{
+// 		free(path[i]);
+// 		i++;
+// 	}
+// 	free(path);
+// }

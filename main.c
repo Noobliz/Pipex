@@ -6,41 +6,30 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:23:47 by lguiet            #+#    #+#             */
-/*   Updated: 2025/01/30 14:32:38 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/04 16:01:30 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	free_path(char **path)
-{
-	int	i;
-
-	i = 0;
-	while (path[i])
-	{
-		free(path[i]);
-		i++;
-	}
-	free(path);
-}
-
 int	main(int argc, char **argv, char **envp)
 {
-	char	*env;
-	char	**cmd;
-	int		i;
+	t_cmd	*cmd_list;
+	t_data	data;
 
-	// char	*cmd_found;
-	i = 0;
-	if (!argc || !argv)
-		return (0);
-	env = get_env(envp);
-	cmd = get_cmd(argv[2]);
-	cmd[0] = find_path(env, cmd[0]);
-	ft_printf("%s\n%s\n", cmd[0], cmd[1]);
-	// if (!cmd_found)
-	// 	ft_printf("Command not found\n");
-	// free(cmd_found);
+	cmd_list = NULL;
+	if (argc < 5)
+	{
+		ft_printf("Usage: ./pipex file1 cmd1 cmd2 file2\n");
+		return (1);
+	}
+	// cmd_list = NULL;
+	init_data(&data, argv, argc);
+	init_cmd(cmd_list, &data);
+	printf("%s", cmd_list->data->file1);
+	return (0);
+	cmd_list = get_commands(argc, argv, envp);
+	execute_commands(cmd_list, envp);
+	free_cmd_list(cmd_list);
 	return (0);
 }
