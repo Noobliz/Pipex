@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:16:40 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/04 15:57:01 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/05 13:35:44 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,13 +26,14 @@ typedef struct s_data
 	char			*file1;
 	char			*file2;
 }					t_data;
-
+// AJOUT DE FILES
 typedef struct s_cmd
 {
 	char			**args;
 	char			*path;
 	int				num_cmds;
-	struct s_data	*data;
+	char			*file1;
+	char			*file2;
 	struct s_cmd	*next;
 }					t_cmd;
 

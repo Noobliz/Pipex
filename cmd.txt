@@ -1,0 +1,77 @@
+
+Commandes Bash Utiles
+Commandes de base
+
+    ls : Liste les fichiers et dossiers (Ex: ls -la)
+    cd : Change de répertoire (Ex: cd /home/user)
+    pwd : Affiche le chemin du répertoire actuel (Ex: pwd)
+    mkdir : Crée un dossier (Ex: mkdir mon_dossier)
+    rm : Supprime un fichier ou un dossier (Ex: rm fichier.txt)
+    cp : Copie un fichier ou un dossier (Ex: cp fichier.txt copie.txt)
+    mv : Déplace ou renomme un fichier (Ex: mv fichier.txt dossier/)
+
+Commandes de recherche
+
+    find : Recherche un fichier dans un répertoire (Ex: find /home -name "document.txt")
+    grep : Recherche un texte dans un fichier (Ex: grep "erreur" journal.log)
+    which : Trouve le chemin d’une commande (Ex: which ls)
+    locate : Recherche un fichier (Ex: locate fichier.txt)
+
+Manipulation de fichiers
+
+    cat : Affiche le contenu d’un fichier (Ex: cat fichier.txt)
+    head : Affiche les premières lignes (Ex: head -n 10 fichier.txt)
+    tail : Affiche les dernières lignes (Ex: tail -f fichier.log)
+    touch : Crée un fichier vide (Ex: touch nouveau_fichier.txt)
+
+Commandes système
+
+    ps : Affiche les processus en cours (Ex: ps aux)
+    top : Affiche l’utilisation CPU et mémoire (Ex: top)
+    kill : Arrête un processus par son PID (Ex: kill 1234)
+    pkill : Arrête un processus par son nom (Ex: pkill firefox)
+    shutdown : Éteint ou redémarre le système (Ex: shutdown -h now)
+
+Commandes réseau
+
+    ping : Vérifie la connexion à un hôte (Ex: ping google.com)
+    curl : Récupère une ressource web (Ex: curl http://example.com)
+    wget : Télécharge un fichier (Ex: wget http://example.com/fichier.zip)
+    netstat : Affiche les connexions réseau (Ex: netstat -tulnp)
+
+Archivage et compression
+
+    tar : Archive un dossier (Ex: tar -cvf archive.tar dossier/)
+    zip : Compresse un dossier (Ex: zip -r archive.zip dossier/)
+    unzip : Décompresse un fichier zip (Ex: unzip archive.zip)
+    gzip : Compresse un fichier (Ex: gzip fichier.txt)
+
+Redirections et pipes
+
+    > : Redirige la sortie vers un fichier (Ex: ls > fichiers.txt)
+    >> : Ajoute à un fichier (Ex: echo "Bonjour" >> fichier.txt)
+    | : Envoie la sortie d’une commande à une autre (Ex: ls | grep .txt)
+
+Permissions et utilisateurs
+
+    chmod : Modifie les permissions (Ex: chmod 755 script.sh)
+    chown : Change le propriétaire d’un fichier (Ex: chown user:group fichier.txt)
+    sudo : Exécute une commande en administrateur (Ex: sudo apt update)
+
+
+
+	//tests
+
+	env -i ./pipex input.txt "ls" "wc -l" output.txt
+	cmd not found
+
+	./pipex input.txt "sleep 2" "sleep 3" "echo 'finished'" output.txt
+	doit terminer après 5sec, output doit contenir "finished"
+
+	./pipex input.txt "/bin/cat" "/usr/bin/wc -w" output.txt
+
+	./pipex fichier_inexistant.txt "cat" "wc -l" output.txt
+ 	no such file or directory
+
+	test en enlevant les droits de fichiers
+

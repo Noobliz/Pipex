@@ -3,26 +3,32 @@
 /*                                                        :::      ::::::::   */
 /*   parse_argv.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:27:44 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/04 15:59:12 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/05 11:50:49 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	free_path(char **path)
-{
-	int	i;
 
-	i = 0;
-	while (path[i])
-	{
-		free(path[i]);
-		i++;
-	}
-	free(path);
+void free_path(char **path)
+{
+    int i = 0;
+    if (!path)
+        return;
+    while (path[i])
+    {
+        free(path[i]);
+        i++;
+    }
+    free(path);
+}
+void error_exit(const char *msg, int code)
+{
+    perror(msg);
+    exit(code);
 }
 int	check_files(int argc, char **argv)
 {
@@ -51,6 +57,24 @@ int	check_files(int argc, char **argv)
 	close(output_fd);
 	return (EXIT_SUCCESS);
 }
+
+// NOUVELLE VERSION
+void check_files(char *file1, char *file2)
+{
+    int fd;
+    
+    fd = open(file1, O_RDONLY);
+    if (fd == -1)
+        fprintf(stderr, "pipex: %s: %s\n", file1, strerror(errno));
+    else
+        close(fd);
+    
+    fd = open(file2, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd == -1)
+        error_exit(file2, 1);
+    close(fd);
+}
+
 void	init_data(t_data *data, char **argv, int argc)
 {
 	data->file1 = ft_strdup(argv[1]);
