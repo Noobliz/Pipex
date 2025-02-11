@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   find_path2.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:28:30 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/05 14:28:56 by lisux            ###   ########.fr       */
+/*   Updated: 2025/02/06 14:01:57 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@ char	*get_env(char **envp)
 
 	i = 0;
 	// SI ON UNSET LE PATH SAMEEER
-	   if (!envp || !envp[0])
-    {
-        fprintf(stderr, "pipex: error: no environment found\n");
-        exit(1);
-    }
+	if (!envp || !envp[0])
+	{
+		ft_printf("pipex: error: no environment found\n");
+		return (NULL);
+	}
 	while (envp[i])
 	{
 		if (ft_strncmp(envp[i], "PATH=", 5) == 0)

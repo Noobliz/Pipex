@@ -1,14 +1,17 @@
 NAME = pipex
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g
+CFLAGS = -Wall -Wextra -Werror -g3
 OBJ_DIR = obj
 LIBFT = LIBFT/libft.a
 
 SRCS = \
-	find_path.c \
+	find_path2.c \
 	parse_argv.c \
-	main_test.c \
+	lst_utils.c \
+	children_utils.c \
+	children.c \
+	main.c \
 
 
 OBJS = $(SRCS:%.c=$(OBJ_DIR)/%.o)

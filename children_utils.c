@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 13:23:21 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/03 15:59:17 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/11 13:35:52 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,12 @@ void	close_pipes(int (*pipes)[2], int num_cmds)
 		i++;
 	}
 }
-void	create_kids(int i, pid_t *pids)
+void	create_kids(pid_t *pids, t_cmd *cmds, int (*pipes)[2])
 {
-	pids[i] = fork();
-	if (pids[i] == -1)
+	*pids = fork();
+	if (*pids == -1)
 	{
+		free_all(pipes, cmds);
 		perror("fork error");
 		exit(EXIT_FAILURE);
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipex.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:16:40 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/05 13:35:44 by lisux            ###   ########.fr       */
+/*   Updated: 2025/02/11 13:33:55 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,6 @@
 # include <sys/wait.h>
 # include <unistd.h>
 
-typedef struct s_data
-{
-	char			*file1;
-	char			*file2;
-}					t_data;
-// AJOUT DE FILES
 typedef struct s_cmd
 {
 	char			**args;
@@ -37,13 +31,14 @@ typedef struct s_cmd
 	struct s_cmd	*next;
 }					t_cmd;
 
-int					check_files(int argc, char **argv);
-void				init_data(t_data *data, char **argv, int argc);
-void				init_cmd(t_cmd *cmd, t_data *data);
+void				check_files(char *file1, char *file2);
+// void				init_data(t_data *data, char **argv, int argc);
+// void				init_cmd(t_cmd *cmd, t_data *data);
 char				*get_env(char **envp);
 char				*find_path(char *env, char *cmd);
 void				free_path(char **path);
 
+void				error_exit(const char *msg, int code);
 //-------------------------------- cmd list
 
 t_cmd				*get_commands(int argc, char **argv, char **envp);
@@ -51,13 +46,14 @@ void				free_cmd_list(t_cmd *cmd_list);
 void				free_cmd_list(t_cmd *cmd_list);
 t_cmd				*cmd_new(char *cmd_str, char *envp[]);
 void				cmd_add_back(t_cmd **cmd_list, t_cmd *new_cmd);
-void				count_commands(t_cmd *cmds);
+void				count_commands(t_cmd *cmds, char **argv, int argc);
 
 //------------------------------------------ pipes and exec cmd
 void				execute_commands(t_cmd *cmds, char **envp);
 //-----------utils------------------------
 void				create_pipes(int num_cmds, int (*pipes)[2]);
 void				close_pipes(int (*pipes)[2], int num_cmds);
-void				create_kids(int i, pid_t *pids);
+void				create_kids(pid_t *pids, t_cmd *cmds, int (*pipes)[2]);
 void				wait_for_kids(int num_cmds, pid_t *pids);
+void				free_all(int (*pipes)[2], t_cmd *cmds);
 #endif
