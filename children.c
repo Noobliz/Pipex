@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   children.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
+/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 16:12:47 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/11 15:47:02 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/11 17:22:25 by lisux            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,13 @@ void	handle_cmds(t_cmd *cmds, int (*pipes)[2], int fd2, char **envp)
 			if (!current->path || (fd2 == -42 && current->next == NULL))
 			{
 				error_message(current);
-				free_all(pipes, cmds);
+				    int j = 0;
+    while (j < current->num_cmds - 1)
+    {
+        close(pipes[i][0]);
+        close(pipes[i][1]);
+        j++;
+    }
 				exit(127);
 			}
 			dup_and_exec(i, pipes, current, envp);
@@ -105,8 +111,8 @@ void	execute_commands(t_cmd *cmds, char **envp)
 	pipes = ft_calloc(sizeof(int[2]), (cmds->num_cmds));
 	create_pipes(cmds, pipes);
 	handle_cmds(cmds, pipes, fd2, envp);
-	close_pipes(pipes, cmds->num_cmds);
 	wait_for_kids(cmds->num_cmds);
+	close_pipes(pipes, cmds->num_cmds);
 	free_cmd_list(cmds);
 	free(pipes);
 }
