@@ -1,0 +1,17 @@
+CHECK dans quel ordre apparait l exit de la protec pour envp unset dans get_env
+
+env -i valgrind --leak-check=full --show-leak-kinds=all --trace-children=yes  ./pipex Makefile "/usr/bin/cat" "grep main.c" write.txt
+
+SI pas les droits pour l outfile, free tout avant dup_and_exec
+
+
+
+
+➜  Pipex chmod 000 write.txt 
+➜  Pipex ./pipex Makefile "/usr/bin/cat" "grep NAME" "wc -l" "touch SHIT" "echo lol" write.txt
+hey
+hey
+pipex: Permission denied
+open error: Permission denied
+wc: 'standard input': Bad file descriptor
+grep: (standard input): Bad file descriptor
