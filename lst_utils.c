@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 12:44:59 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/10 17:10:44 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/11 14:29:58 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ t_cmd	*cmd_new(char *cmd_str, char *envp[])
 		free(cmd);
 		return (NULL);
 	}
-	// SI YA UN CHEMIN ABSOLU
 	if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
 	{
 		if (access(cmd->args[0], X_OK) == 0)

@@ -6,18 +6,11 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 16:12:47 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/11 13:39:46 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/11 15:47:02 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
-void	free_all(int (*pipes)[2], t_cmd *cmds)
-{
-	close_pipes(pipes, cmds->num_cmds);
-	free_cmd_list(cmds);
-	free(pipes);
-}
 
 void	first_child(int i, int (*pipes)[2], t_cmd *cmds)
 {
@@ -57,43 +50,32 @@ void	dup_and_exec(int i, int (*pipes)[2], t_cmd *current, char **envp)
 		last_child(i, pipes, current);
 	else
 	{
-		dup2(pipes[i - 1][0], STDIN_FILENO);
-		dup2(pipes[i][1], STDOUT_FILENO);
+		// write(1, "hey\n", 4);
+		if (dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
+			perror("dup2 stdin");
+		if (dup2(pipes[i][1], STDOUT_FILENO) == -1)
+			perror("dup2 stdout");
 	}
 	close_pipes(pipes, current->num_cmds);
 	execve(current->path, current->args, envp);
 	perror("pipex");
 	exit(126);
 }
-void	file2_rights(int *fd2, t_cmd *cmds)
+void	error_message(t_cmd *current)
 {
-	*fd2 = open(cmds->file2, O_WRONLY);
-	if (*fd2 == -1)
-	{
-		if (access(cmds->file2, F_OK) == 0)
-		{
-			cmds->num_cmds--;
-			*fd2 = -42;
-		}
-	}
+	if (!current->path)
+		perror("cmd not found\n");
 	else
-		close(*fd2);
+		perror("pipex");
 }
-
-void	execute_commands(t_cmd *cmds, char **envp)
+void	handle_cmds(t_cmd *cmds, int (*pipes)[2], int fd2, char **envp)
 {
-	pid_t	pids;
-	t_cmd	*current;
 	int		i;
-	int		fd2;
+	t_cmd	*current;
+	pid_t	pids;
 
-	fd2 = 0;
-	file2_rights(&fd2, cmds);
-	int(*pipes)[2];
-	pipes = ft_calloc(sizeof(int[2]), (cmds->num_cmds));
-	current = cmds;
-	create_pipes(cmds->num_cmds, pipes);
 	i = 0;
+	current = cmds;
 	while (current && current->num_cmds > 0)
 	{
 		create_kids(&pids, cmds, pipes);
@@ -101,10 +83,7 @@ void	execute_commands(t_cmd *cmds, char **envp)
 		{
 			if (!current->path || (fd2 == -42 && current->next == NULL))
 			{
-				if (!current->path)
-					ft_printf("pipex: command not found\n");
-				else
-					ft_printf("pipex : permission denied\n");
+				error_message(current);
 				free_all(pipes, cmds);
 				exit(127);
 			}
@@ -114,13 +93,20 @@ void	execute_commands(t_cmd *cmds, char **envp)
 		current = current->next;
 		i++;
 	}
-	// wait_for_kids(cmds->num_cmds, pids);
+}
+
+void	execute_commands(t_cmd *cmds, char **envp)
+{
+	int	fd2;
+
+	int(*pipes)[2];
+	fd2 = 0;
+	file2_rights(&fd2, cmds);
+	pipes = ft_calloc(sizeof(int[2]), (cmds->num_cmds));
+	create_pipes(cmds, pipes);
+	handle_cmds(cmds, pipes, fd2, envp);
 	close_pipes(pipes, cmds->num_cmds);
-	while (i > 0)
-	{
-		wait(NULL);
-		i--;
-	}
+	wait_for_kids(cmds->num_cmds);
 	free_cmd_list(cmds);
 	free(pipes);
 }

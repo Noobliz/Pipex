@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:16:40 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/11 13:33:55 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/11 14:05:12 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,10 @@ void				count_commands(t_cmd *cmds, char **argv, int argc);
 //------------------------------------------ pipes and exec cmd
 void				execute_commands(t_cmd *cmds, char **envp);
 //-----------utils------------------------
-void				create_pipes(int num_cmds, int (*pipes)[2]);
+void				create_pipes(t_cmd *cmds, int (*pipes)[2]);
 void				close_pipes(int (*pipes)[2], int num_cmds);
 void				create_kids(pid_t *pids, t_cmd *cmds, int (*pipes)[2]);
-void				wait_for_kids(int num_cmds, pid_t *pids);
+void				wait_for_kids(int num_cmds);
 void				free_all(int (*pipes)[2], t_cmd *cmds);
+void				file2_rights(int *fd2, t_cmd *cmds);
 #endif

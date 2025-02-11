@@ -6,21 +6,29 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 13:23:21 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/11 13:35:52 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/11 14:04:19 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	create_pipes(int num_cmds, int (*pipes)[2])
+void	free_all(int (*pipes)[2], t_cmd *cmds)
+{
+	close_pipes(pipes, cmds->num_cmds);
+	free_cmd_list(cmds);
+	free(pipes);
+}
+
+void	create_pipes(t_cmd *cmds, int (*pipes)[2])
 {
 	int	i;
 
 	i = 0;
-	while (i < num_cmds - 1)
+	while (i < cmds->num_cmds - 1)
 	{
 		if (pipe(pipes[i]) == -1)
 		{
+			free_all(pipes, cmds);
 			perror("pipe error");
 			exit(EXIT_FAILURE);
 		}
@@ -50,14 +58,14 @@ void	create_kids(pid_t *pids, t_cmd *cmds, int (*pipes)[2])
 	}
 }
 
-void	wait_for_kids(int num_cmds, pid_t *pids)
+void	wait_for_kids(int num_cmds)
 {
 	int i;
 
 	i = 0;
 	while (i < num_cmds)
 	{
-		waitpid(pids[i], NULL, 0);
+		wait(NULL);
 		i++;
 	}
 }
