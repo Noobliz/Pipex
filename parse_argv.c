@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:27:44 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/11 14:31:57 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/12 13:58:16 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,13 @@ void	error_exit(const char *msg, int code)
 {
 	perror(msg);
 	exit(code);
+}
+void	error_message(t_cmd *current)
+{
+	if (!current->path)
+		perror("pipex");
+	else
+		perror("pipex");
 }
 
 // NOUVELLE VERSION

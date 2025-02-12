@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:23:47 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/10 16:22:54 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/12 14:00:45 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@ int	main(int argc, char **argv, char **envp)
 		return (1);
 	}
 	cmd_list = get_commands(argc, argv, envp);
-	execute_commands(cmd_list, envp);
+	//_printf("num cmd : %d\n", cmd_list->num_cmds);
+	pipex(cmd_list, envp);
 	// free_cmd_list(cmd_list);
 	return (0);
 }

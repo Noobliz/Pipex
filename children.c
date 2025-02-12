@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   children.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lisux <lisux@student.42.fr>                +#+  +:+       +#+        */
+/*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 16:12:47 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/11 17:22:25 by lisux            ###   ########.fr       */
+/*   Updated: 2025/02/12 14:01:03 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	first_child(int i, int (*pipes)[2], t_cmd *cmds)
+static void	first_child(int i, int (*pipes)[2], t_cmd *cmds)
 {
 	int	input_fd;
 
@@ -20,14 +20,15 @@ void	first_child(int i, int (*pipes)[2], t_cmd *cmds)
 	if (input_fd == -1)
 	{
 		free_all(pipes, cmds);
-		perror("open error");
+		perror("pipex");
 		exit(EXIT_FAILURE);
 	}
 	dup2(input_fd, STDIN_FILENO);
 	close(input_fd);
 	dup2(pipes[i][1], STDOUT_FILENO);
 }
-void	last_child(int i, int (*pipes)[2], t_cmd *cmds)
+
+static void	last_child(int i, int (*pipes)[2], t_cmd *cmds)
 {
 	int	output_fd;
 
@@ -42,7 +43,7 @@ void	last_child(int i, int (*pipes)[2], t_cmd *cmds)
 	dup2(output_fd, STDOUT_FILENO);
 }
 
-void	dup_and_exec(int i, int (*pipes)[2], t_cmd *current, char **envp)
+static void	dup_and_exec(int i, int (*pipes)[2], t_cmd *current, char **envp)
 {
 	if (i == 0)
 		first_child(i, pipes, current);
@@ -50,7 +51,6 @@ void	dup_and_exec(int i, int (*pipes)[2], t_cmd *current, char **envp)
 		last_child(i, pipes, current);
 	else
 	{
-		// write(1, "hey\n", 4);
 		if (dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
 			perror("dup2 stdin");
 		if (dup2(pipes[i][1], STDOUT_FILENO) == -1)
@@ -59,16 +59,12 @@ void	dup_and_exec(int i, int (*pipes)[2], t_cmd *current, char **envp)
 	close_pipes(pipes, current->num_cmds);
 	execve(current->path, current->args, envp);
 	perror("pipex");
+	free_cmd_list(current);
+	free(pipes);
 	exit(126);
 }
-void	error_message(t_cmd *current)
-{
-	if (!current->path)
-		perror("cmd not found\n");
-	else
-		perror("pipex");
-}
-void	handle_cmds(t_cmd *cmds, int (*pipes)[2], int fd2, char **envp)
+
+static void	handle_cmds(t_cmd *cmds, int (*pipes)[2], int fd2, char **envp)
 {
 	int		i;
 	t_cmd	*current;
@@ -76,6 +72,7 @@ void	handle_cmds(t_cmd *cmds, int (*pipes)[2], int fd2, char **envp)
 
 	i = 0;
 	current = cmds;
+	file2_rights(&fd2, current);
 	while (current && current->num_cmds > 0)
 	{
 		create_kids(&pids, cmds, pipes);
@@ -84,13 +81,7 @@ void	handle_cmds(t_cmd *cmds, int (*pipes)[2], int fd2, char **envp)
 			if (!current->path || (fd2 == -42 && current->next == NULL))
 			{
 				error_message(current);
-				    int j = 0;
-    while (j < current->num_cmds - 1)
-    {
-        close(pipes[i][0]);
-        close(pipes[i][1]);
-        j++;
-    }
+				free_all(pipes, cmds);
 				exit(127);
 			}
 			dup_and_exec(i, pipes, current, envp);
@@ -101,21 +92,21 @@ void	handle_cmds(t_cmd *cmds, int (*pipes)[2], int fd2, char **envp)
 	}
 }
 
-void	execute_commands(t_cmd *cmds, char **envp)
+void	pipex(t_cmd *cmds, char **envp)
 {
 	int	fd2;
 
 	int(*pipes)[2];
 	fd2 = 0;
-	file2_rights(&fd2, cmds);
 	pipes = ft_calloc(sizeof(int[2]), (cmds->num_cmds));
 	create_pipes(cmds, pipes);
 	handle_cmds(cmds, pipes, fd2, envp);
-	wait_for_kids(cmds->num_cmds);
 	close_pipes(pipes, cmds->num_cmds);
+	wait_for_kids(cmds->num_cmds);
 	free_cmd_list(cmds);
 	free(pipes);
 }
+
 // NEW VERSION OU PAS
 // void	execute_commands(t_cmd *cmds, char **envp)
 // {

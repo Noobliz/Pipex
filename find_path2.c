@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/31 13:28:30 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/06 14:01:57 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/11 15:47:39 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ t_cmd	*get_commands(int argc, char **argv, char **envp)
 
 	cmd_list = NULL;
 	i = 2;
-	while (i < argc - 1) // Ne pas inclure file1 et file2
+	while (i < argc - 1)
 	{
 		new_cmd = cmd_new(argv[i], envp);
 		if (!new_cmd)
