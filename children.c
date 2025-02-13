@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/30 16:12:47 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/12 14:01:03 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/13 16:04:10 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,14 @@ static void	first_child(int i, int (*pipes)[2], t_cmd *cmds)
 	if (input_fd == -1)
 	{
 		free_all(pipes, cmds);
-		perror("pipex");
+		perror("pipex infile");
 		exit(EXIT_FAILURE);
 	}
-	dup2(input_fd, STDIN_FILENO);
+	if (dup2(input_fd, STDIN_FILENO) == -1)
+		perror("dup2");
 	close(input_fd);
-	dup2(pipes[i][1], STDOUT_FILENO);
+	if (dup2(pipes[i][1], STDOUT_FILENO) == -1)
+		perror("dup2");
 }
 
 static void	last_child(int i, int (*pipes)[2], t_cmd *cmds)
@@ -33,14 +35,26 @@ static void	last_child(int i, int (*pipes)[2], t_cmd *cmds)
 	int	output_fd;
 
 	output_fd = open(cmds->file2, O_WRONLY | O_CREAT | O_TRUNC, 0664);
+	if (!cmds->path)
+	{
+		error_message(cmds);
+		free_all(pipes, cmds->head);
+		if (output_fd > -1)
+			close(output_fd);
+		exit(127);
+	}
 	if (output_fd == -1)
 	{
-		perror("open error");
+		perror("pipex outfile");
+		free_all(pipes, cmds->head);
 		exit(EXIT_FAILURE);
 	}
-	dup2(pipes[i - 1][0], STDIN_FILENO);
+	if (dup2(pipes[i - 1][0], STDIN_FILENO) == -1)
+		perror("dup2");
 	close(pipes[i - 1][0]);
-	dup2(output_fd, STDOUT_FILENO);
+	if (dup2(output_fd, STDOUT_FILENO) == -1)
+		perror("dup2");
+	close(output_fd);
 }
 
 static void	dup_and_exec(int i, int (*pipes)[2], t_cmd *current, char **envp)
@@ -59,7 +73,7 @@ static void	dup_and_exec(int i, int (*pipes)[2], t_cmd *current, char **envp)
 	close_pipes(pipes, current->num_cmds);
 	execve(current->path, current->args, envp);
 	perror("pipex");
-	free_cmd_list(current);
+	free_cmd_list(current->head);
 	free(pipes);
 	exit(126);
 }
@@ -78,7 +92,8 @@ static void	handle_cmds(t_cmd *cmds, int (*pipes)[2], int fd2, char **envp)
 		create_kids(&pids, cmds, pipes);
 		if (pids == 0)
 		{
-			if (!current->path || (fd2 == -42 && current->next == NULL))
+			if ((!current->path && current->next != NULL) || (fd2 == -42
+					&& current->next == NULL))
 			{
 				error_message(current);
 				free_all(pipes, cmds);
@@ -98,7 +113,7 @@ void	pipex(t_cmd *cmds, char **envp)
 
 	int(*pipes)[2];
 	fd2 = 0;
-	pipes = ft_calloc(sizeof(int[2]), (cmds->num_cmds));
+	pipes = malloc(sizeof(int[2]) * (cmds->num_cmds));
 	create_pipes(cmds, pipes);
 	handle_cmds(cmds, pipes, fd2, envp);
 	close_pipes(pipes, cmds->num_cmds);
@@ -135,7 +150,7 @@ void	pipex(t_cmd *cmds, char **envp)
 // 			// SI CMD INTROUVABLE CODE ERREUR 127
 // 			if (!current->path)
 // 			{
-// 				fprintf(stderr, "pipex: %s: command not found\n",
+// 				ft_printf("pipex: %s: command not found\n",
 // 					current->args[0]);
 // 				exit(127);
 // 			}

@@ -6,8 +6,8 @@ OBJ_DIR = obj
 LIBFT = LIBFT/libft.a
 
 SRCS = \
-	find_path2.c \
-	parse_argv.c \
+	find_path.c \
+	free_error_utils.c \
 	lst_utils.c \
 	children_utils.c \
 	children.c \

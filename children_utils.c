@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/03 13:23:21 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/12 12:55:14 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/13 16:21:44 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,18 +35,20 @@ void	create_pipes(t_cmd *cmds, int (*pipes)[2])
 		i++;
 	}
 }
+
 void	close_pipes(int (*pipes)[2], int num_cmds)
 {
 	int	i;
 
 	i = 0;
-	while (i < num_cmds -1)
+	while (i < num_cmds - 1)
 	{
 		close(pipes[i][0]);
 		close(pipes[i][1]);
 		i++;
 	}
 }
+
 void	create_kids(pid_t *pids, t_cmd *cmds, int (*pipes)[2])
 {
 	*pids = fork();
