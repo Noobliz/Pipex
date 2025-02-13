@@ -41,15 +41,15 @@ t_cmd	*cmd_new(char *cmd_str, char *envp[])
 	cmd->args = ft_split(cmd_str, ' ');
 	if (!cmd->args || !cmd->args[0])
 	{
-		free(cmd);
-		return (NULL);
+		
+		cmd->args = NULL;
 	}
 	if (cmd->args[0][0] == '/' || cmd->args[0][0] == '.')
 	{
 		if (access(cmd->args[0], X_OK) == 0)
 			cmd->path = ft_strdup(cmd->args[0]);
 	}
-	else
+	else if (cmd->args !=NULL)
 		cmd->path = find_path(get_env(envp), cmd->args[0]);
 	cmd->next = NULL;
 	return (cmd);
