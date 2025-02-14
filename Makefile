@@ -31,26 +31,26 @@ OBJS_BONUS = $(SRCS_BONUS:bonus/%.c=$(OBJ_DIR_BONUS)/%.o)
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
-	@echo "Linking $(NAME)..."
+	@echo "Compiling Pipex..."
 	@$(CC) $(CFLAGS) $(OBJS) -o $(NAME) -L./LIBFT -lft
+	@echo "Pipex compilation complete ✅"
 
 bonus: $(NAME_BONUS)
 
 $(NAME_BONUS): $(LIBFT) $(OBJS_BONUS)
-	@echo "Linking $(NAME_BONUS)..."
+	@echo "Compiling Pipex Bonus..."
 	@$(CC) $(CFLAGS) $(OBJS_BONUS) -o $(NAME_BONUS) -L./LIBFT -lft
+	@echo "Pipex Bonus compilation complete ✅"
 
 # Compilation des fichiers dans obj/
 $(OBJ_DIR)/%.o: %.c
 	@mkdir -p $(OBJ_DIR)
-	@echo "Compiling $(notdir $<)..."
-	@$(CC) $(CFLAGS) -I. -I LIBFT/ -o $@ -c $<
+	@$(CC) $(CFLAGS) -I. -I LIBFT/ -o $@ -c $@
 
 # Compilation des fichiers bonus dans obj_bonus/
 $(OBJ_DIR_BONUS)/%.o: bonus/%.c
 	@mkdir -p $(OBJ_DIR_BONUS)
-	@echo "Compiling bonus $(notdir $<)..."
-	@$(CC) $(CFLAGS) -I. -I LIBFT/ -o $@ -c $<
+	@$(CC) $(CFLAGS) -I. -I LIBFT/ -o $@ -c $@
 
 $(LIBFT):
 	@echo "Building libft..."
@@ -66,3 +66,5 @@ fclean: clean
 	@rm -f $(NAME) $(NAME_BONUS)
 
 re: fclean all
+
+.PHONY: all bonus clean fclean re
