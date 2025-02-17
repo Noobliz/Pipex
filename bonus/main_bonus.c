@@ -6,7 +6,7 @@
 /*   By: lguiet <lguiet@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/01/29 15:23:47 by lguiet            #+#    #+#             */
-/*   Updated: 2025/02/14 15:29:22 by lguiet           ###   ########.fr       */
+/*   Updated: 2025/02/13 16:21:16 by lguiet           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	main(int argc, char **argv, char **envp)
 	t_cmd	*cmd_list;
 
 	cmd_list = NULL;
-	if (argc < 5 || argc > 5)
+	if (argc < 5)
 	{
 		ft_printf("Usage: ./pipex file1 cmd1 cmd2 file2\n");
 		return (1);
